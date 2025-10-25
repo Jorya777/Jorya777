@@ -18,7 +18,7 @@ page = st.sidebar.radio(
 # ----------------------------------------------------------
 if page == "📈 Evaluation Dashboard":
     st.title("📈 UNSDCF Evaluation Expenditure Dashboard")
-    file_path = "2021-2023_evaluation_expenditures_analysis.xlsx"
+    file_path = "2021-2023evaluationexpendituresanalysis.xlsx"
 
     try:
         df_spend = pd.read_excel(file_path)
