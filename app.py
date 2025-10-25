@@ -23,7 +23,7 @@ if page == "📈 Evaluation Dashboard":
     try:
         df_spend = pd.read_excel(file_path)
         df_spend.columns = df_spend.columns.str.strip()
-
+        df_spend.columns = df_spend.columns.str.strip().str.replace(r"\s+", " ", regex=True)
         df_spend.rename(columns={
             "Evaluation expenditure($)": "Evaluation Spending ($)",
             "Program Expenditure": "Program Expenditure",
