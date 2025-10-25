@@ -1,9 +1,8 @@
-streamlit
-plotly
 pandas
+plotly
+streamlit
 numpy
 nltk
 PyPDF2
 python-docx
-scikit-learn
-tqdm
+openpyxl
