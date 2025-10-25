@@ -8,12 +8,6 @@ import plotly.express as px
 st.set_page_config(page_title="UNSDCF Evaluation Dashboard", layout="wide")
 st.title("🌍 United Nations Sustainable Development Cooperation Framework Evaluation Dashboard")
 
-st.markdown("""
-This dashboard visualizes **evaluation expenditures**, **synthesized findings**, 
-and **text analysis** from UNSDCF evaluations under OECD-DAC criteria.
----
-""")
-
 # ==========================================================
 # 📊 PART I: Visualizing the Implementation of Evaluations
 # ==========================================================
