@@ -36,16 +36,17 @@ if page == "📈 Evaluation Dashboard":
 
         # 🌍 Map
         st.subheader("🌍 Global Evaluation Map (2021–2023)")
-        fig_map = px.scatter_geo(
-            df_spend,
-            locations="Country",
-            locationmode="country names",
-            hover_name="Country",
-            hover_data={"Evaluation year ": True, "Eval Ratio (%)": True},
-            text="Evaluation year ",
-            projection="natural earth",
-            color_discrete_sequence=["#1f77b4"]
-        )
+       fig_map = px.scatter_geo(
+    df_spend,
+    locations="Country",
+    locationmode="country names",
+    hover_name="Country",
+    hover_data={"Evaluation year": True, "Eval Ratio (%)": True},
+    text="Evaluation year",
+    projection="natural earth",
+    color_discrete_sequence=["#1f77b4"]
+)
+
         st.plotly_chart(fig_map, use_container_width=True)
 
         # 💰 Scatter plot (as %)
