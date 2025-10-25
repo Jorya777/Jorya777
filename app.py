@@ -12,7 +12,7 @@ st.title("🌍 United Nations Sustainable Development Cooperation Framework Eval
 # ----------------------------------------------------------
 # 📊 加载 Evaluation Expenditure 数据
 # ----------------------------------------------------------
-file_path = "2021-2023 evaluation expenditures analysis .xlsx"
+file_path = "2021-2023_evaluation_expenditures_analysis.xlsx"
 df_spend = pd.read_excel(file_path)
 df_spend.columns = df_spend.columns.str.strip()
 df_spend.rename(columns={
