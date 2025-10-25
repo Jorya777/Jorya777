@@ -34,9 +34,6 @@ if page == "1️⃣ Evaluation Expenditure":
 
         df_spend.dropna(subset=["Eval Ratio (%)"], inplace=True)
 
-        st.success("✅ Data loaded successfully!")
-        st.write("**Loaded columns:**", list(df_spend.columns))
-
         # Global Map
         st.subheader("🌍 Global Evaluation Map (2021–2023)")
         fig_map = px.scatter_geo(
