@@ -15,7 +15,7 @@ st.title("🌍 United Nations Sustainable Development Cooperation Framework Eval
 # ----------------------------------------------------------
 # 📊 Load and Clean Data
 # ----------------------------------------------------------
-file_path = "2021-2023 evaluation expenditures analysis .xlsx"
+file_path = "2021-2023 evaluationexpendituresanalysis .xlsx"
 
 try:
     df_spend = pd.read_excel(file_path)
