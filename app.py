@@ -9,11 +9,7 @@ st.set_page_config(page_title="UNSDCF Evaluation Dashboard", layout="wide")
 
 # --- Global Header ---
 st.title("🌐 UNSDCF Evaluation Dashboard (2021–2023)")
-st.markdown("""
-This dashboard consolidates **evaluation expenditure**, **synthesized findings**,  
-and **textual analysis** from UNSDCF evaluations between 2021–2023.  
----
-""")
+
 
 # --- Sidebar Navigation ---
 page = st.sidebar.radio(
