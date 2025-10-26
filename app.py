@@ -31,8 +31,7 @@ st.markdown("""
              style="height:130px; margin-right:40px;">
         <div>
             <h1 style="color:white; font-size:40px; font-weight:700; line-height:1.2; margin:0;">
-                United Nations DCO — UNSDCF<br>
-                Evaluation Dashboard (2021–2024)
+                UNSDCF Evaluation Dashboard (2021–2024)
             </h1>
         </div>
     </div>
