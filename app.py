@@ -42,7 +42,7 @@ st.markdown("""
 # 📂 File Paths
 # ----------------------------------------------------------
 EXP_FILE = "2021-2023evaluationexpendituresanalysis.xlsx"
-TEXT_FILE = "relevant_sentences_UNSDCF_filtered.csv"
+TEXT_FILE = "relevant_sentences_UNSDCF.csv"
 WORD_FILE = "word_frequency_UNSDCF.csv"
 
 # ----------------------------------------------------------
@@ -186,7 +186,7 @@ elif page == "Part III: Text Analysis of Evaluations":
     st.header("Part III: Text Analysis of Evaluations")
 
     try:
-        df_mentions = pd.read_csv("relevant_sentences_UNSDCF_filtered.csv")
+        df_mentions = pd.read_csv("relevant_sentences_UNSDCF.csv")
         df_words = pd.read_csv("word_frequency_UNSDCF.csv")
         df_cooc = pd.read_csv("actor_cooccurrence_UNSDCF.csv")
 
