@@ -133,8 +133,8 @@ if page == "Part I: Evaluation Implementation":
     except Exception as e:
         st.error(f"❌ Failed to load data: {e}")
 # PART II: Synthesizing Evaluation Findings #
-elif page == "Part II: Synthesizing Evaluation Findings(2024)":
-    st.header("Part II: Synthesizing the Evaluation Findings(2024)")
+elif page == "Part II: Synthesizing Evaluation Findings":
+    st.header("Part II: Synthesizing the Evaluation Findings")
 
     st.subheader("🕸️ OECD-DAC Criteria Performance")
     CRITERIA = ['relevance','coherence','effectiveness','efficiency','orientation towards impact','sustainability']
