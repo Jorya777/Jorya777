@@ -123,7 +123,7 @@ elif page == "Part II: Synthesizing Evaluation Findings":
                               color_discrete_sequence=["#0077C8"])
     st.plotly_chart(fig_radar, use_container_width=True)
 
-    st.subheader("🔵🔴 Strengths and Weaknesses in UNCT Performance")
+    st.subheader("Strengths and Weaknesses in UNCT Performance")
     strengths = [
         ("Aligned with national priorities and SDG frameworks", 5),
         ("Trusted as neutral conveners", 4),
