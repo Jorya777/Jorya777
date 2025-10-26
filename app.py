@@ -67,12 +67,10 @@ if page == "Part I: Evaluation Implementation":
     try:
         df_spend = pd.read_excel(EXP_FILE)
         df_spend.columns = df_spend.columns.str.strip()
-
-        # 自动识别列名并清理空格、全角符号
         clean_cols = []
         for col in df_spend.columns:
-            c = re.sub(r'\s+', ' ', col)  # 多空格→单空格
-            c = c.replace('\u3000', ' ')  # 全角空格→半角
+            c = re.sub(r'\s+', ' ', col)  
+            c = c.replace('\u3000', ' ')  
             clean_cols.append(c.strip())
         df_spend.columns = clean_cols
 
@@ -85,7 +83,7 @@ if page == "Part I: Evaluation Implementation":
             "Program Expenditure": "Program Expenditure"
         }
 
-        # 尝试模糊匹配 Program Expenditure
+        # Program Expenditure
         prog_col = [c for c in df_spend.columns if re.search("program.*expenditure", c, re.I)]
         if prog_col:
             rename_map[prog_col[0]] = "Program Expenditure"
@@ -106,7 +104,7 @@ if page == "Part I: Evaluation Implementation":
             if df_spend["Eval Ratio (%)"].max() < 1:
                 df_spend["Eval Ratio (%)"] *= 100
 
-            st.subheader("🌍 Global Evaluation Map (2021–2024)")
+            st.subheader("🌍 Global Evaluation Map (2021–2023)")
             fig_map = px.scatter_geo(
                 df_spend,
                 locations="Country",
@@ -134,9 +132,7 @@ if page == "Part I: Evaluation Implementation":
 
     except Exception as e:
         st.error(f"❌ Failed to load data: {e}")
-# ==========================================================
-# 📈 PART II: Synthesizing Evaluation Findings
-# ==========================================================
+# PART II: Synthesizing Evaluation Findings
 elif page == "Part II: Synthesizing Evaluation Findings":
     st.header("Part II: Synthesizing the Evaluation Findings")
 
@@ -156,7 +152,7 @@ elif page == "Part II: Synthesizing Evaluation Findings":
     fig_radar = px.line_polar(df_scores[df_scores["Country"]==country], r="Score", theta="Criterion", line_close=True, color_discrete_sequence=["#0077C8"])
     st.plotly_chart(fig_radar, use_container_width=True)
 
-    st.subheader("🔴🔵 Strengths vs Weaknesses of UNCT Evaluations")
+    st.subheader("🔴🔵 Strengths vs Weaknesses of UNCT Performance")
     strengths = [
         ("Aligned with national priorities and SDG frameworks", 5),
         ("Trusted as neutral conveners between government and partners", 4),
