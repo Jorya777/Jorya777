@@ -180,23 +180,24 @@ elif page == "Part II: Synthesizing Evaluation Findings":
                               yaxis=dict(title=None), xaxis=dict(title="Frequency of Mentions", showgrid=False))
     st.plotly_chart(fig_balance, use_container_width=True)
 
-# 📘 PART III: Text Analysis of Evaluations 
+# ==========================================================
+# 📘 PART III: Text Analysis of Evaluations (with Concordance Sampling)
 # ==========================================================
 elif page == "Part III: Text Analysis of Evaluations":
     st.header("Part III: Text Analysis of Evaluations")
 
     try:
-        df_mentions = pd.read_csv("relevant_sentences_UNSDCF.csv")
+        df_mentions = pd.read_csv("relevant_sentences_UNSDCF_filtered.csv")
         df_words = pd.read_csv("word_frequency_UNSDCF.csv")
-        df_cooc = pd.read_csv("actor_cooccurrence_UNSDCF.csv")
 
         st.markdown("""
         This section presents **AI-assisted text analysis** from UNSDCF evaluation reports (2021–2024),
         focusing on how **RC (Resident Coordinator)**, **UNCT (UN Country Team)**, and **DCO (Development Coordination Office)** 
-        are reflected in evaluation narratives — including **sentiment trends** and **commonly co-occurring concepts**.
+        are reflected in evaluation narratives — including **sentiment trends**, **keyword frequencies**, 
+        and sampled **concordance contexts**.
         """)
 
-        # --- 图表部分 ---
+        # --- Sentiment Distribution by Actor ---
         st.subheader("📊 Sentiment Distribution by Actor")
         sent_summary = df_mentions.groupby(["Actor", "Sentiment_Label"]).size().reset_index(name="Count")
         fig_sent = px.bar(
@@ -208,28 +209,32 @@ elif page == "Part III: Text Analysis of Evaluations":
         )
         st.plotly_chart(fig_sent, use_container_width=True)
 
-        st.subheader("🔍 Commonly Associated Terms by Actor")
-        for actor in ["DCO", "RC", "UNCT"]:
-            subset = df_cooc[df_cooc["Actor"] == actor]
-            if len(subset) > 0:
-                fig_actor = px.bar(
-                    subset.sort_values(by="count", ascending=True),
-                    x="count", y="word", orientation="h",
-                    color="count", color_continuous_scale="Blues",
-                    template="plotly_white"
-                )
-                fig_actor.update_layout(title=f"Top Co-occurring Words with {actor}")
-                st.plotly_chart(fig_actor, use_container_width=True)
-
-        st.subheader("🗝️ Overall Keyword Frequency (All Mentions)")
+        # --- Keyword Frequency ---
+        st.subheader("🗝️ Top Keywords in Evaluation Mentions")
         top_words = df_words.head(20)
         fig_words = px.bar(
             top_words,
             x="word", y="count", color="count",
             title="Top 20 Keywords in Evaluation Mentions",
-            template="plotly_white", color_continuous_scale="teal"
+            template="plotly_white", color_continuous_scale="Blues"
         )
         st.plotly_chart(fig_words, use_container_width=True)
+
+        # --- Concordance Sampling ---
+        st.subheader("🔍 Sample Concordance (Keyword in Context)")
+        st.markdown("Select an actor to view sample contexts mentioning it:")
+
+        actor_choice = st.selectbox("Choose Actor:", ["UNCT", "RC", "DCO"])
+        if st.button(f"Show sample contexts for {actor_choice}"):
+            df_actor = df_mentions[df_mentions["Actor"] == actor_choice]
+            if not df_actor.empty:
+                st.write(f"Showing up to 10 random mentions for **{actor_choice}**:")
+                st.dataframe(
+                    df_actor.sample(n=min(10, len(df_actor)))[["Country", "Sentiment_Label", "Sentence"]],
+                    use_container_width=True
+                )
+            else:
+                st.info(f"No mentions found for {actor_choice}.")
 
         st.markdown("""
         ---
@@ -239,6 +244,7 @@ elif page == "Part III: Text Analysis of Evaluations":
 
     except Exception as e:
         st.warning(f"⚠️ Text analysis results not found or failed to load: {e}")
+
 
 
 # ==========================================================
