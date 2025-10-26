@@ -132,7 +132,7 @@ if page == "Part I: Evaluation Implementation":
 
     except Exception as e:
         st.error(f"❌ Failed to load data: {e}")
-# PART II: Synthesizing Evaluation Findings
+# PART II: Synthesizing Evaluation Findings(2024)
 elif page == "Part II: Synthesizing Evaluation Findings":
     st.header("Part II: Synthesizing the Evaluation Findings")
 
@@ -181,7 +181,7 @@ elif page == "Part II: Synthesizing Evaluation Findings":
     st.plotly_chart(fig_balance, use_container_width=True)
 
 # ==========================================================
-# 📘 PART III: Text Analysis of Evaluations (with Concordance Sampling)
+# 📘 PART III: Text Analysis of Evaluations 
 # ==========================================================
 elif page == "Part III: Text Analysis of Evaluations":
     st.header("Part III: Text Analysis of Evaluations")
@@ -189,13 +189,6 @@ elif page == "Part III: Text Analysis of Evaluations":
     try:
         df_mentions = pd.read_csv("relevant_sentences_UNSDCF.csv")
         df_words = pd.read_csv("word_frequency_UNSDCF.csv")
-
-        st.markdown("""
-        This section presents **AI-assisted text analysis** from UNSDCF evaluation reports (2021–2024),
-        focusing on how **RC (Resident Coordinator)**, **UNCT (UN Country Team)**, and **DCO (Development Coordination Office)** 
-        are reflected in evaluation narratives — including **sentiment trends**, **keyword frequencies**, 
-        and sampled **concordance contexts**.
-        """)
 
         # --- Sentiment Distribution by Actor ---
         st.subheader("📊 Sentiment Distribution by Actor")
@@ -244,8 +237,6 @@ elif page == "Part III: Text Analysis of Evaluations":
 
     except Exception as e:
         st.warning(f"⚠️ Text analysis results not found or failed to load: {e}")
-
-
 
 # ==========================================================
 # 📄 Footer
