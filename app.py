@@ -180,7 +180,6 @@ elif page == "Part II: Synthesizing Evaluation Findings":
                               yaxis=dict(title=None), xaxis=dict(title="Frequency of Mentions", showgrid=False))
     st.plotly_chart(fig_balance, use_container_width=True)
 
- ==========================================================
 # 📘 PART III: Text Analysis of Evaluations 
 # ==========================================================
 elif page == "Part III: Text Analysis of Evaluations":
