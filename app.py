@@ -187,7 +187,7 @@ elif page == "Part III: Text Analysis of Evaluations":
     st.header("Part III: Text Analysis of Evaluations")
 
     try:
-        df_mentions = pd.read_csv("relevant_sentences_UNSDCF_filtered.csv")
+        df_mentions = pd.read_csv("relevant_sentences_UNSDCF.csv")
         df_words = pd.read_csv("word_frequency_UNSDCF.csv")
 
         st.markdown("""
