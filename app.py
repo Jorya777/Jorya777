@@ -15,28 +15,29 @@ st.set_page_config(page_title="UNSDCF Evaluation Dashboard (2021–2024)", layou
 
 import streamlit as st
 
+import streamlit as st
+
 # --- Header with UN DCO Logo ---
 st.markdown("""
     <div style="
         background-color:#005EB8;
-        padding:30px 30px 25px 30px;
-        border-radius:10px;
+        padding:40px 50px 40px 50px;
+        border-radius:14px;
         display:flex;
         align-items:center;
     ">
         <img src="https://raw.githubusercontent.com/Jorya777/Jorya777/main/UNDCO_Logo_2020_Hz_RGB_White.png"
              alt="UN DCO Logo"
-             style="height:85px; margin-right:25px;">
+             style="height:130px; margin-right:40px;">
         <div>
-            <h1 style="color:white; font-size:36px; margin-bottom:5px;">
-                United Nations DCO — UNSDCF Evaluation Dashboard (2021–2024)
+            <h1 style="color:white; font-size:40px; font-weight:700; line-height:1.2; margin:0;">
+                United Nations DCO — UNSDCF<br>
+                Evaluation Dashboard (2021–2024)
             </h1>
-            <h3 style="color:white; font-weight:400; margin-top:0;">
-                Visualizing Accountability and Learning Across Regions
-            </h3>
         </div>
     </div>
 """, unsafe_allow_html=True)
+
 
 # ----------------------------------------------------------
 # 📂 File Paths
