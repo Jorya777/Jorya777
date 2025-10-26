@@ -187,7 +187,6 @@ elif page == "Part III: Text Analysis of Evaluations":
     st.header("Part III: Text Analysis of Evaluations")
 
     try:
-        # 直接读取同目录下的文件
         df_mentions = pd.read_csv("relevant_sentences_UNSDCF_filtered.csv")
         df_words = pd.read_csv("word_frequency_UNSDCF.csv")
         df_cooc = pd.read_csv("actor_cooccurrence_UNSDCF.csv")
@@ -198,9 +197,7 @@ elif page == "Part III: Text Analysis of Evaluations":
         are reflected in evaluation narratives — including **sentiment trends** and **commonly co-occurring concepts**.
         """)
 
-        # ==========================================================
-        # 1️⃣ Sentiment Distribution by Actor
-        # ==========================================================
+        # --- 图表部分 ---
         st.subheader("📊 Sentiment Distribution by Actor")
         sent_summary = df_mentions.groupby(["Actor", "Sentiment_Label"]).size().reset_index(name="Count")
         fig_sent = px.bar(
@@ -210,12 +207,8 @@ elif page == "Part III: Text Analysis of Evaluations":
             color_discrete_map={"Positive": "#0077C8", "Neutral": "#7f8c8d", "Negative": "#C0392B"},
             title="Sentiment Distribution in Evaluation Mentions"
         )
-        fig_sent.update_layout(title_x=0.3)
         st.plotly_chart(fig_sent, use_container_width=True)
 
-        # ==========================================================
-        # 2️⃣ Commonly Associated Terms by Actor
-        # ==========================================================
         st.subheader("🔍 Commonly Associated Terms by Actor")
         for actor in ["DCO", "RC", "UNCT"]:
             subset = df_cooc[df_cooc["Actor"] == actor]
@@ -226,15 +219,9 @@ elif page == "Part III: Text Analysis of Evaluations":
                     color="count", color_continuous_scale="Blues",
                     template="plotly_white"
                 )
-                fig_actor.update_layout(
-                    title=f"Top Co-occurring Words with {actor}",
-                    xaxis_title="Frequency", yaxis_title=None
-                )
+                fig_actor.update_layout(title=f"Top Co-occurring Words with {actor}")
                 st.plotly_chart(fig_actor, use_container_width=True)
 
-        # ==========================================================
-        # 3️⃣ Overall Keyword Frequency
-        # ==========================================================
         st.subheader("🗝️ Overall Keyword Frequency (All Mentions)")
         top_words = df_words.head(20)
         fig_words = px.bar(
@@ -243,7 +230,6 @@ elif page == "Part III: Text Analysis of Evaluations":
             title="Top 20 Keywords in Evaluation Mentions",
             template="plotly_white", color_continuous_scale="teal"
         )
-        fig_words.update_layout(title_x=0.25)
         st.plotly_chart(fig_words, use_container_width=True)
 
         st.markdown("""
@@ -254,6 +240,7 @@ elif page == "Part III: Text Analysis of Evaluations":
 
     except Exception as e:
         st.warning(f"⚠️ Text analysis results not found or failed to load: {e}")
+
 
 # ==========================================================
 # 📄 Footer
