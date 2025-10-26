@@ -181,35 +181,101 @@ elif page == "Part II: Synthesizing Evaluation Findings":
     st.plotly_chart(fig_balance, use_container_width=True)
 
 # ==========================================================
-# 🧠 PART III: Text Analysis of Evaluations
+# 📘 PART III: Text Analysis of Evaluations (Final Version)
 # ==========================================================
 elif page == "Part III: Text Analysis of Evaluations":
     st.header("Part III: Text Analysis of Evaluations")
 
     try:
-        df_mentions = pd.read_csv(TEXT_FILE)
-        df_words = pd.read_csv(WORD_FILE)
+        # -----------------------------
+        # 读取三份分析结果文件
+        # -----------------------------
+        df_mentions = pd.read_csv("/content/drive/MyDrive/relevant_sentences_UNSDCF_filtered.csv")
+        df_words = pd.read_csv("/content/drive/MyDrive/word_frequency_UNSDCF.csv")
+        df_cooc = pd.read_csv("/content/drive/MyDrive/actor_cooccurrence_UNSDCF.csv")
 
+        # -----------------------------
+        # 概述文字
+        # -----------------------------
         st.markdown("""
-        This section visualizes AI-assisted text analysis results from UNSDCF evaluation reports, 
-        focusing on mentions of **RC (Resident Coordinator)**, **UNCT (UN Country Team)**, and **DCO (Development Coordination Office)**.
+        This section presents **AI-assisted text analysis** from UNSDCF evaluation reports (2021–2024),
+        focusing on how **RC (Resident Coordinator)**, **UNCT (UN Country Team)**, and **DCO (Development Coordination Office)** 
+        are reflected in evaluation narratives — including **sentiment trends** and **commonly co-occurring concepts**.
         """)
 
-        st.subheader("📑 Sample Extracted Sentences")
-        st.dataframe(df_mentions[["Country","Actor","Sentiment_Label","Sentence"]].head(10))
-
+        # ==========================================================
+        # 1️⃣ Sentiment Distribution by Actor
+        # ==========================================================
         st.subheader("📊 Sentiment Distribution by Actor")
-        sent_summary = df_mentions.groupby(["Actor","Sentiment_Label"]).size().reset_index(name="Count")
-        fig_sent = px.bar(sent_summary, x="Actor", y="Count", color="Sentiment_Label",
-                          barmode="group", template="plotly_white",
-                          color_discrete_map={"Positive":"#0077C8","Neutral":"#7f8c8d","Negative":"#C0392B"})
+        sent_summary = df_mentions.groupby(["Actor", "Sentiment_Label"]).size().reset_index(name="Count")
+
+        fig_sent = px.bar(
+            sent_summary,
+            x="Actor", y="Count", color="Sentiment_Label",
+            barmode="group", template="plotly_white",
+            color_discrete_map={
+                "Positive": "#0077C8",
+                "Neutral": "#7f8c8d",
+                "Negative": "#C0392B"
+            },
+            title="Sentiment Distribution in Evaluation Mentions"
+        )
+        fig_sent.update_layout(title_x=0.3)
         st.plotly_chart(fig_sent, use_container_width=True)
 
-        st.subheader("🔤 Keyword Frequency in Mentions")
+        # ==========================================================
+        # 2️⃣ Commonly Associated Terms by Actor
+        # ==========================================================
+        st.subheader("🔍 Commonly Associated Terms by Actor")
+        st.markdown("""
+        The following charts highlight the most frequent terms appearing alongside each key actor (**DCO**, **RC**, **UNCT**) 
+        across all UNSDCF evaluation reports.  
+        These patterns provide insights into how each entity is discussed and framed in evaluation findings.
+        """)
+
+        for actor in ["DCO", "RC", "UNCT"]:
+            subset = df_cooc[df_cooc["Actor"] == actor]
+            if len(subset) > 0:
+                fig_actor = px.bar(
+                    subset.sort_values(by="count", ascending=True),
+                    x="count", y="word", orientation="h",
+                    color="count",
+                    color_continuous_scale="Blues",
+                    template="plotly_white"
+                )
+                fig_actor.update_layout(
+                    title=f"Top Co-occurring Words with {actor}",
+                    xaxis_title="Frequency",
+                    yaxis_title=None
+                )
+                st.plotly_chart(fig_actor, use_container_width=True)
+            else:
+                st.info(f"No co-occurrence data found for {actor}.")
+
+        # ==========================================================
+        # 3️⃣ Overall Keyword Frequency (All Mentions)
+        # ==========================================================
+        st.subheader("🗝️ Overall Keyword Frequency (All Mentions)")
         top_words = df_words.head(20)
-        fig_words = px.bar(top_words, x="word", y="count", color="count",
-                           title="Top 20 Keywords in Evaluation Mentions", template="plotly_white")
+
+        fig_words = px.bar(
+            top_words,
+            x="word", y="count", color="count",
+            title="Top 20 Keywords in Evaluation Mentions",
+            template="plotly_white",
+            color_continuous_scale="teal"
+        )
+        fig_words.update_layout(title_x=0.25)
         st.plotly_chart(fig_words, use_container_width=True)
+
+        # ==========================================================
+        # 4️⃣ Footer
+        # ==========================================================
+        st.markdown("""
+        ---
+        *Source: United Nations Development Coordination Office (UNDCO), Evaluation Reports (2021–2024)*  
+        *Data analyzed using Python (NLTK, Scikit-learn, Plotly, Streamlit).*
+        """)
 
     except Exception as e:
         st.warning(f"⚠️ Text analysis results not found or failed to load: {e}")
