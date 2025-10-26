@@ -28,7 +28,7 @@ st.markdown("""
     ">
         <img src="https://raw.githubusercontent.com/Jorya777/Jorya777/main/UNDCO_Logo_2020_Hz_RGB_White.png"
              alt="UN DCO Logo"
-             style="height:130px; margin-right:40px;">
+             style="height:150px; margin-right:40px;">
         <div>
             <h1 style="color:white; font-size:40px; font-weight:700; line-height:1.2; margin:0;">
                 UN Sustainable Development Cooperation Framework Evaluation Dashboard (2021–2024)
