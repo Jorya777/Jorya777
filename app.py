@@ -1,5 +1,6 @@
 # ==========================================================
-# 🌍 UNSDCF Evaluation Dashboard (Final Version)
+# 🌍 UNSDCF Evaluation Dashboard (2021–2024)
+# United Nations Development Coordination Office (DCO)
 # ==========================================================
 
 import streamlit as st
@@ -7,14 +8,59 @@ import pandas as pd
 import plotly.express as px
 
 # ----------------------------------------------------------
-#  Page Config
+# 🧭 Page Config
 # ----------------------------------------------------------
-st.set_page_config(page_title="UNSDCF Evaluation Dashboard", layout="wide")
-
-st.title("🌍 United Nations Sustainable Development Cooperation Framework (UNSDCF) Evaluation Dashboard")
+st.set_page_config(page_title="UNSDCF Evaluation Dashboard (2021–2024)", layout="wide")
 
 # ----------------------------------------------------------
-# File Paths 
+# 🟦 UN Header (with SVG logo)
+# ----------------------------------------------------------
+st.markdown("""
+<style>
+.header-container {
+    display: flex;
+    align-items: center;
+    background-color: #005DA4;
+    padding: 1.2em 1.5em;
+    border-radius: 10px;
+    color: white;
+}
+.header-logo {
+    width: 50px;
+    height: 50px;
+    margin-right: 15px;
+}
+.header-text h1 {
+    font-size: 1.9em;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1.2;
+}
+.header-text h3 {
+    font-size: 1.1em;
+    font-weight: 400;
+    margin: 0.3em 0 0 0;
+    opacity: 0.9;
+}
+</style>
+
+<div class="header-container">
+  <img class="header-logo" src="https://upload.wikimedia.org/wikipedia/commons/2/2f/United_Nations_emblem_blue.svg">
+  <div class="header-text">
+    <h1>United Nations DCO — UNSDCF Evaluation Dashboard (2021–2024)</h1>
+    <h3>Visualizing Cooperation Framework Evaluations Across Regions</h3>
+  </div>
+</div>
+""", unsafe_allow_html=True)
+
+st.markdown("""
+---
+This dashboard visualizes **evaluation implementation**, **synthesized findings**, 
+and **text analysis** from UNSDCF evaluations under OECD-DAC criteria.
+""")
+
+# ----------------------------------------------------------
+# 📂 File Paths
 # ----------------------------------------------------------
 EXP_FILE = "2021-2023evaluationexpendituresanalysis.xlsx"
 TEXT_FILE = "relevant_sentences_UNSDCF_filtered.csv"
@@ -39,56 +85,63 @@ page = st.sidebar.radio(
 if page == "Part I: Evaluation Implementation":
     st.header("Part I: Visualizing the Implementation of Evaluations")
 
-    # Load Data
-    df_spend = pd.read_excel(EXP_FILE)
-    df_spend.columns = df_spend.columns.str.strip()
+    try:
+        df_spend = pd.read_excel(EXP_FILE)
+        df_spend.columns = df_spend.columns.str.strip()
 
-    df_spend.rename(columns={
-        "Evaluation expenditure($)": "Evaluation Spending ($)",
-        "Program Expenditure": "Program Expenditure",
-        "The proportion of Evaluation Expenditure to Program Expenditure": "Eval Ratio (%)"
-    }, inplace=True)
+        rename_map = {
+            "Evaluation expenditure($)": "Evaluation Spending ($)",
+            "Evaluation Expenditure ($)": "Evaluation Spending ($)",
+            "Evaluation Spending($)": "Evaluation Spending ($)",
+            "The proportion of Evaluation Expenditure to Program Expenditure": "Eval Ratio (%)",
+            "Eval Ratio (%)": "Eval Ratio (%)",
+            "Program Expenditure": "Program Expenditure"
+        }
+        df_spend.rename(columns=rename_map, inplace=True)
 
-    # Ensure numeric and percentage format
-    for c in ["Evaluation Spending ($)", "Program Expenditure", "Eval Ratio (%)"]:
-        df_spend[c] = pd.to_numeric(df_spend[c], errors="coerce")
-    df_spend.dropna(subset=["Eval Ratio (%)"], inplace=True)
+        expected_cols = ["Evaluation Spending ($)", "Program Expenditure", "Eval Ratio (%)"]
+        missing = [c for c in expected_cols if c not in df_spend.columns]
 
-    # Convert ratio to percentage (if < 1)
-    if df_spend["Eval Ratio (%)"].max() < 1:
-        df_spend["Eval Ratio (%)"] = df_spend["Eval Ratio (%)"] * 100
+        if missing:
+            st.error(f"⚠️ Missing expected columns: {missing}. Please check your Excel header.")
+            st.write("Loaded columns:", list(df_spend.columns))
+        else:
+            for c in expected_cols:
+                df_spend[c] = pd.to_numeric(df_spend[c], errors="coerce")
+            df_spend.dropna(subset=["Eval Ratio (%)"], inplace=True)
 
-    # 🌍 Map
-    st.subheader("🌍 Global Evaluation Map")
-    st.markdown("A scatter-geo map visualizing all countries that completed evaluations between 2021–2023.")
+            if df_spend["Eval Ratio (%)"].max() < 1:
+                df_spend["Eval Ratio (%)"] *= 100
 
-    fig_map = px.scatter_geo(
-        df_spend,
-        locations="Country",
-        locationmode="country names",
-        hover_name="Country",
-        hover_data={"Evaluation year": True, "Eval Ratio (%)": True},
-        text="Evaluation year",
-        projection="natural earth",
-        color_discrete_sequence=["#1f77b4"]
-    )
-    st.plotly_chart(fig_map, use_container_width=True)
+            st.subheader("🌍 Global Evaluation Map (2021–2024)")
+            fig_map = px.scatter_geo(
+                df_spend,
+                locations="Country",
+                locationmode="country names",
+                hover_name="Country",
+                hover_data={"Evaluation year": True, "Eval Ratio (%)": True},
+                text="Evaluation year",
+                projection="natural earth",
+                color_discrete_sequence=["#0077C8"]
+            )
+            st.plotly_chart(fig_map, use_container_width=True)
 
-    # 💰 Scatter Plot
-    st.subheader("💰 Evaluation Expenditure vs Programme Expenditure")
-    st.markdown("This scatter plot compares total program expenditure with evaluation ratios (in %), sized by evaluation spending.")
+            st.subheader("💰 Evaluation Expenditure vs Programme Expenditure")
+            st.markdown("This scatter plot compares total programme expenditure with evaluation ratios (in %), sized by evaluation spending.")
+            fig_scatter = px.scatter(
+                df_spend,
+                x="Program Expenditure",
+                y="Eval Ratio (%)",
+                size="Evaluation Spending ($)",
+                color="Region" if "Region" in df_spend.columns else "Country",
+                hover_name="Country",
+                labels={"Eval Ratio (%)": "Evaluation Ratio (%)"},
+                template="plotly_white"
+            )
+            st.plotly_chart(fig_scatter, use_container_width=True)
 
-    fig_scatter = px.scatter(
-        df_spend,
-        x="Program Expenditure",
-        y="Eval Ratio (%)",
-        size="Evaluation Spending ($)",
-        color="Region" if "Region" in df_spend.columns else "Country",
-        hover_name="Country",
-        labels={"Eval Ratio (%)": "Evaluation Ratio (%)"},
-        template="plotly_white"
-    )
-    st.plotly_chart(fig_scatter, use_container_width=True)
+    except Exception as e:
+        st.error(f"❌ Failed to load data: {e}")
 
 # ==========================================================
 # 📈 PART II: Synthesizing Evaluation Findings
@@ -96,7 +149,6 @@ if page == "Part I: Evaluation Implementation":
 elif page == "Part II: Synthesizing Evaluation Findings":
     st.header("Part II: Synthesizing the Evaluation Findings")
 
-    # 🕸️ Radar Chart
     st.subheader("🕸️ OECD-DAC Criteria Performance")
     CRITERIA = ['relevance','coherence','effectiveness','efficiency','orientation towards impact','sustainability']
     countries_eval = ["Azerbaijan","Uganda","Serbia","Indonesia","Panama","Bosnia and Herzegovina"]
@@ -110,10 +162,9 @@ elif page == "Part II: Synthesizing Evaluation Findings":
     }
     df_scores = pd.DataFrame([{"Country":c,"Criterion":crit,"Score":scores[c][i]} for c in countries_eval for i,crit in enumerate(CRITERIA)])
     country = st.sidebar.selectbox("Select Country", countries_eval)
-    fig_radar = px.line_polar(df_scores[df_scores["Country"]==country], r="Score", theta="Criterion", line_close=True, color_discrete_sequence=["#1f77b4"])
+    fig_radar = px.line_polar(df_scores[df_scores["Country"]==country], r="Score", theta="Criterion", line_close=True, color_discrete_sequence=["#0077C8"])
     st.plotly_chart(fig_radar, use_container_width=True)
 
-    # 🔴🔵 Symmetrical Bar
     st.subheader("🔴🔵 Strengths vs Weaknesses of UNCT Evaluations")
     strengths = [
         ("Aligned with national priorities and SDG frameworks", 5),
@@ -136,7 +187,7 @@ elif page == "Part II: Synthesizing Evaluation Findings":
     df_weak["Type"] = "Weakness"
     df_bal = pd.concat([df_strength, df_weak])
     fig_balance = px.bar(df_bal, x="Frequency", y="Aspect", color="Type",
-                         color_discrete_map={"Strength":"steelblue","Weakness":"#d62728"},
+                         color_discrete_map={"Strength":"#005DA4","Weakness":"#C0392B"},
                          orientation="h", template="plotly_white")
     fig_balance.update_layout(title="Strengths (Blue, Right) vs Weaknesses (Red, Left)",
                               yaxis=dict(title=None), xaxis=dict(title="Frequency of Mentions", showgrid=False))
@@ -157,19 +208,16 @@ elif page == "Part III: Text Analysis of Evaluations":
         focusing on mentions of **RC (Resident Coordinator)**, **UNCT (UN Country Team)**, and **DCO (Development Coordination Office)**.
         """)
 
-        # 📑 Table preview
         st.subheader("📑 Sample Extracted Sentences")
         st.dataframe(df_mentions[["Country","Actor","Sentiment_Label","Sentence"]].head(10))
 
-        # 📊 Sentiment Distribution by Actor
         st.subheader("📊 Sentiment Distribution by Actor")
         sent_summary = df_mentions.groupby(["Actor","Sentiment_Label"]).size().reset_index(name="Count")
         fig_sent = px.bar(sent_summary, x="Actor", y="Count", color="Sentiment_Label",
                           barmode="group", template="plotly_white",
-                          color_discrete_map={"Positive":"#1f77b4","Neutral":"#7f7f7f","Negative":"#d62728"})
+                          color_discrete_map={"Positive":"#0077C8","Neutral":"#7f8c8d","Negative":"#C0392B"})
         st.plotly_chart(fig_sent, use_container_width=True)
 
-        # 🔤 Keyword Frequency
         st.subheader("🔤 Keyword Frequency in Mentions")
         top_words = df_words.head(20)
         fig_words = px.bar(top_words, x="word", y="count", color="count",
@@ -180,5 +228,7 @@ elif page == "Part III: Text Analysis of Evaluations":
         st.warning(f"⚠️ Text analysis results not found or failed to load: {e}")
 
 # ==========================================================
+# 📄 Footer
+# ==========================================================
 st.markdown("---")
-st.markdown("© United Nations DCO — Data Visualization for Learning Purposes (Built with Python & Streamlit)")
+st.markdown("<p style='text-align:center; color:#555;'>© United Nations DCO — Data Visualization for Learning Purposes (Built with Python & Streamlit)</p>", unsafe_allow_html=True)
