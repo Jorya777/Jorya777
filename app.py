@@ -6,6 +6,7 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+import re
 
 # ----------------------------------------------------------
 # 🧭 Page Config
@@ -13,7 +14,7 @@ import plotly.express as px
 st.set_page_config(page_title="UNSDCF Evaluation Dashboard (2021–2024)", layout="wide")
 
 # ----------------------------------------------------------
-# 🟦 UN Header (with SVG logo)
+# 🟦 UN Header with working logo
 # ----------------------------------------------------------
 st.markdown("""
 <style>
@@ -26,18 +27,17 @@ st.markdown("""
     color: white;
 }
 .header-logo {
-    width: 50px;
-    height: 50px;
+    width: 48px;
+    height: 48px;
     margin-right: 15px;
 }
 .header-text h1 {
     font-size: 1.9em;
     font-weight: 700;
     margin: 0;
-    line-height: 1.2;
 }
 .header-text h3 {
-    font-size: 1.1em;
+    font-size: 1.05em;
     font-weight: 400;
     margin: 0.3em 0 0 0;
     opacity: 0.9;
@@ -45,7 +45,7 @@ st.markdown("""
 </style>
 
 <div class="header-container">
-  <img class="header-logo" src="https://upload.wikimedia.org/wikipedia/commons/2/2f/United_Nations_emblem_blue.svg">
+  <img class="header-logo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/United_Nations_emblem_blue.svg/240px-United_Nations_emblem_blue.svg.png">
   <div class="header-text">
     <h1>United Nations DCO — UNSDCF Evaluation Dashboard (2021–2024)</h1>
     <h3>Visualizing Cooperation Framework Evaluations Across Regions</h3>
@@ -89,6 +89,14 @@ if page == "Part I: Evaluation Implementation":
         df_spend = pd.read_excel(EXP_FILE)
         df_spend.columns = df_spend.columns.str.strip()
 
+        # 自动识别列名并清理空格、全角符号
+        clean_cols = []
+        for col in df_spend.columns:
+            c = re.sub(r'\s+', ' ', col)  # 多空格→单空格
+            c = c.replace('\u3000', ' ')  # 全角空格→半角
+            clean_cols.append(c.strip())
+        df_spend.columns = clean_cols
+
         rename_map = {
             "Evaluation expenditure($)": "Evaluation Spending ($)",
             "Evaluation Expenditure ($)": "Evaluation Spending ($)",
@@ -97,6 +105,12 @@ if page == "Part I: Evaluation Implementation":
             "Eval Ratio (%)": "Eval Ratio (%)",
             "Program Expenditure": "Program Expenditure"
         }
+
+        # 尝试模糊匹配 Program Expenditure
+        prog_col = [c for c in df_spend.columns if re.search("program.*expenditure", c, re.I)]
+        if prog_col:
+            rename_map[prog_col[0]] = "Program Expenditure"
+
         df_spend.rename(columns=rename_map, inplace=True)
 
         expected_cols = ["Evaluation Spending ($)", "Program Expenditure", "Eval Ratio (%)"]
@@ -127,7 +141,6 @@ if page == "Part I: Evaluation Implementation":
             st.plotly_chart(fig_map, use_container_width=True)
 
             st.subheader("💰 Evaluation Expenditure vs Programme Expenditure")
-            st.markdown("This scatter plot compares total programme expenditure with evaluation ratios (in %), sized by evaluation spending.")
             fig_scatter = px.scatter(
                 df_spend,
                 x="Program Expenditure",
@@ -142,7 +155,6 @@ if page == "Part I: Evaluation Implementation":
 
     except Exception as e:
         st.error(f"❌ Failed to load data: {e}")
-
 # ==========================================================
 # 📈 PART II: Synthesizing Evaluation Findings
 # ==========================================================
