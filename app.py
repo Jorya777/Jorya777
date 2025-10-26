@@ -13,49 +13,30 @@ import re
 # ----------------------------------------------------------
 st.set_page_config(page_title="UNSDCF Evaluation Dashboard (2021–2024)", layout="wide")
 
-# ----------------------------------------------------------
-# 🟦 UN Header with embedded logo (Base64, always visible)
-# ----------------------------------------------------------
+import streamlit as st
+
+# --- Header with UN DCO Logo ---
 st.markdown("""
-<style>
-.header-container {
-    display: flex;
-    align-items: center;
-    background-color: #005DA4;
-    padding: 1.2em 1.5em;
-    border-radius: 10px;
-    color: white;
-}
-.header-logo {
-    width: 50px;
-    height: 50px;
-    margin-right: 15px;
-}
-.header-text h1 {
-    font-size: 1.9em;
-    font-weight: 700;
-    margin: 0;
-    line-height: 1.2;
-}
-.header-text h3 {
-    font-size: 1.1em;
-    font-weight: 400;
-    margin: 0.3em 0 0 0;
-    opacity: 0.9;
-}
-</style>
-
-<div class="header-container">
-  <img class="header-logo" 
-       src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQwIiBoZWlnaHQ9IjI0MCIgdmlld0JveD0iMCAwIDI0MCAyNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTExOS44IDIuNUM1My4zIDIuNSAyLjUgNTMuMyAyLjUgMTE5LjggMi41IDE4Ni4zIDUzLjMgMjM3LjEgMTE5LjggMjM3LjEgMTg2LjMgMjM3LjEgMjM3LjEgMTg2LjMgMjM3LjEgMTE5LjggMTg2LjMgMTE5LjggMTE5LjggMTg2LjMgMTE5LjggMTE5LjguMDEgMTg2LjMuMDEgMTM3LjkgMTg2LjMuMDEgMTM3LjkgMTE5LjguMDEgMTM3LjkgMTE5LjggMTE5LjggMTg2LjMgMTE5LjggMTE5LjguMDEgMTg2LjMuMDEgMTM3LjkgMTg2LjMuMDEgMTM3LjkgMTE5LjguMDEgMTM3LjkgMTE5LjggMTE5LjggMTg2LjMgMTE5LjggMTE5LjguMDEgMTg2LjMuMDEgMTM3LjkgMTg2LjMuMDEgMTM3LjkgMTE5LjguMDEgMTM3LjkgMTE5LjggMTE5LjggMTg2LjMgMTE5LjggMTE5LjguMDEgMTg2LjMuMDEgMTM3LjkiIHN0eWxlPSJmaWxsOiAjZmZmOyBzdHJva2U6ICNmZmY7IHN0cm9rZS13aWR0aDogMTA7Ii8+PC9zdmc+" 
-       alt="UN Logo">
-  <div class="header-text">
-    <h1>United Nations DCO — UNSDCF Evaluation Dashboard (2021–2024)</h1>
-    <h3>Visualizing Cooperation Framework Evaluations Across Regions</h3>
-  </div>
-</div>
+    <div style="
+        background-color:#005EB8;
+        padding:30px 30px 25px 30px;
+        border-radius:10px;
+        display:flex;
+        align-items:center;
+    ">
+        <img src="https://raw.githubusercontent.com/Jorya777/Jorya777/main/UNDCO_Logo_2020_Hz_RGB_White.png"
+             alt="UN DCO Logo"
+             style="height:85px; margin-right:25px;">
+        <div>
+            <h1 style="color:white; font-size:36px; margin-bottom:5px;">
+                United Nations DCO — UNSDCF Evaluation Dashboard (2021–2024)
+            </h1>
+            <h3 style="color:white; font-weight:400; margin-top:0;">
+                Visualizing Accountability and Learning Across Regions
+            </h3>
+        </div>
+    </div>
 """, unsafe_allow_html=True)
-
 
 # ----------------------------------------------------------
 # 📂 File Paths
