@@ -63,9 +63,8 @@ def load_csv(path: Path) -> pd.DataFrame:
     return pd.read_csv(path)
 
 
-def file_uploader_fallback(label: str, type_: list[str]):
+def file_uploader_fallback(label, type_):
     return st.file_uploader(label, type=type_)
-
 
 # -----------------------------
 # Sidebar
